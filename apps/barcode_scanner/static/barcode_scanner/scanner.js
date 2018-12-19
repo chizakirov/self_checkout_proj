@@ -40,7 +40,7 @@
 
     let img 
     let barCodes = null
-    let scanner = zbarProcessImageData;
+    // let scanner = zbarProcessImageData;
     // scanner.parse_config('enable')
 
     function startVideoProcessing(){
@@ -51,16 +51,36 @@
         requestAnimationFrame(processVideo);
     }
 
+    // let canvasFrame = document.getElementById("canvasFrame"); // canvasFrame is the id of <canvas>
+    // let context = canvasFrame.getContext("2d");
+    // let src = new cv.Mat(height, width, cv.CV_8UC4);
+    // let dst = new cv.Mat(height, width, cv.CV_8UC1);
+    // let pic = document.getElementById('pic')
+
     function scan(img){
+        // context.drawImage(pic, 0, 0, pic.width, pic.height);
+        // var data = context.getImageData(0, 0, width, height);
         // console.log(img)
         // console.log(img['data'])
         // console.log(img['data'].length)
         // console.log(cv.read(img))
         // console.log('scanning')
-        barCodes = scanner(img);
+        barCodes = zbarProcessImageData(img);
         if(barCodes.length > 0){
             console.log('barcode detected' + barCodes)
+            data = {
+                type : barCodes[0][0],
+                data : barCodes[0][2]
+            }
+            $.ajax({
+                url: '/scan_success',
+                data: data
+            })
+            .done(function(){
+                $('col').innerHTML('<h1 class = "text-success"> Scan Successful </h1>')
+            })
         }
+        
         
         // for(var i in barCodes){
         //     console.log('type : ' + i.type)

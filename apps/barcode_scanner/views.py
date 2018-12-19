@@ -16,19 +16,21 @@ def upload_file(request):
         context = {
         'url' : fs.url(name)
         }
+        print(url)
         request.session['name'] = name
     return redirect('/read')
 
 def read_barcode(request):
     # Find barcodes and QR codes
     img = cv2.imread('media/' + request.session['name'], 0)
-    print(img)
+    # print(img)
+    # decodedObjects = request.GET['data']
     decodedObjects = pyzbar.decode(img)
     print(decodedObjects)
     for obj in decodedObjects:
         print('Type : ', obj.type)
         print('Data : ', obj.data,'\n')
-     
+    
     return redirect('/')
 
 def scanner(request):
