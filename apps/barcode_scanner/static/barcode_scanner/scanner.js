@@ -52,14 +52,21 @@
     }
 
     function scan(img){
-        console.log(img)
+        // console.log(img)
+        // console.log(img['data'])
+        // console.log(img['data'].length)
+        // console.log(cv.read(img))
         // console.log('scanning')
         barCodes = scanner(img);
-        for(var i in barCodes){
-            console.log('type : ' + i.type)
-            console.log('data : ' + i.data)
-            console.log(' ')
+        if(barCodes.length > 0){
+            console.log('barcode detected' + barCodes)
         }
+        
+        // for(var i in barCodes){
+        //     console.log('type : ' + i.type)
+        //     console.log('data : ' + i.data)
+        //     console.log(' ')
+        // }
         return img
     }
 
@@ -79,7 +86,7 @@
         let result;
         result = scan(img)
         cv.imshow('scanner_output', result)
-        // setTimeout(requestAnimationFrame, 2500, processVideo);
+        // setTimeout(requestAnimationFrame, 500, processVideo);
         requestAnimationFrame(processVideo)
     }
 

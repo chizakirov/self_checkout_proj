@@ -22,6 +22,7 @@ def upload_file(request):
 def read_barcode(request):
     # Find barcodes and QR codes
     img = cv2.imread('media/' + request.session['name'], 0)
+    print(img)
     decodedObjects = pyzbar.decode(img)
     print(decodedObjects)
     for obj in decodedObjects:
