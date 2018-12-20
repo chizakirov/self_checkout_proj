@@ -41,11 +41,14 @@
     <div class="container">
       <div class="row">
         <div class="col">
-          <form action="/upload" method="POST" enctype="multipart/form-data">
+          {% for i in messages %}
+            {{i}}
+          {% endfor %}
+          <form action="/scanner/upload" method="POST" enctype="multipart/form-data">
             {% csrf_token %}
             <div class="form-group">
               <label for="">Upload File</label>
-              <input type="file" accept = "image/*" class="form-control-file" name="test" id="" />
+              <input type="file" accept = "image/*" class="form-control-file" name="name" id="" />
             </div>
             <<button type="submit" class="btn btn-primary">Submit</button>
             <img src="/media/barcode.png" alt="">
