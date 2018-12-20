@@ -7,22 +7,22 @@ from django.core.files.storage import FileSystemStorage
 def root(request):
     return render(request, 'barcode_scanner/index.html')
 
-def upload_file(request):
+def upload_code(request):
     if request.method == 'POST':
         uploaded_file = request.FILES['test']
         fs = FileSystemStorage()
-        name = fs.save(uploaded_file.name, uploaded_file)
+        name = fs.save('barcode', uploaded_file)
         url = fs.url(name)
+        # print(name)
         context = {
         'url' : fs.url(name)
         }
-        print(url)
         request.session['name'] = name
+        print(url)
     return redirect('/read')
 
 def read_barcode(request):
-    # Find barcodes and QR codes
-    img = cv2.imread('media/' + request.session['name'], 0)
+    img = cv2.imread('media/'+ request.session['name'], 0)
     # print(img)
     # decodedObjects = request.GET['data']
     decodedObjects = pyzbar.decode(img)
@@ -30,7 +30,8 @@ def read_barcode(request):
     for obj in decodedObjects:
         print('Type : ', obj.type)
         print('Data : ', obj.data,'\n')
-    
+    fs = FileSystemStorage(location = '/media')
+    fs.delete('barcode')
     return redirect('/')
 
 def scanner(request):
