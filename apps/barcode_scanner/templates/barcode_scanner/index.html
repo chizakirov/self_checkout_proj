@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>Title</title>
+    <title>Dashboard</title>
     <!-- Required meta tags -->
     <meta charset="utf-8" />
     <meta
@@ -16,10 +16,56 @@
       integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
       crossorigin="anonymous"
     />
+    <script src = "http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    {% load static %}
+    <style>
+      @font-face {
+        font-family: 'airbnb-cereal'; 
+        src: url('./static/barcode_scanner/fonts/AirbnbCereal-Medium.ttf');
+      }
+      body{
+        min-height: 1200px;
+        margin-top: 40px;
+        background:linear-gradient(to right, #2c3442, transparent),url('./static/barcode_scanner/img/justwalkout.jpg') no-repeat center;
+        background-size: cover;
+        color: #ff6a70;
+        font-family: 'airbnb-cereal'; 
+      }
+      .nav{
+        margin-bottom: 20px;
+      }
+      .nav-left, .nav-right{
+        display: inline-block;
+        vertical-align: top;
+      }
+      .nav-right{
+        margin-left: 800px; 
+      }
+      .barcode{
+        margin-bottom: 40px;
+        margin-left: 350px;
+      }
+      hr{
+        border: 0;
+        height: 1px;
+        background: white;
+        /* background-image: linear-gradient(to right, #ccc, #333, #ccc); */
+      } 
+      img{
+        height: 400px;
+        width: 400px;
+        /* transform: rotate(90deg); */
+      }
+      table{
+        border-radius: 6px;
+      }
+      #map{
+        height:400px;
+        width: 100%;
+      }
+    </style>
   </head>
   <body>
-    <!-- Optional JavaScript -->
-    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <script
       src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
       integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
@@ -35,27 +81,127 @@
       integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
       crossorigin="anonymous"
     ></script>
-   
-    <!-- https://docs.opencv.org/master/utils.js -->
-
     <div class="container">
-      <div class="row">
-        <div class="col">
-          {% for i in messages %}
-            {{i}}
-          {% endfor %}
-          <form action="/scanner/upload" method="POST" enctype="multipart/form-data">
-            {% csrf_token %}
-            <div class="form-group">
-              <label for="">Upload File</label>
-              <input type="file" accept = "image/*" class="form-control-file" name="name" id="" />
+        <div class="nav">
+          <h3 class = "nav-left">Welcome, {{ user_name }}!</h3>
+          <p class = "nav-right"><a href="/clear" class="btn btn-primary" style = "font-size: 80%">Sign Out</a></p>
+        </div>
+        <hr>
+        <div class="content">
+          <div class="barcode">
+            <div>
+                {% for i in messages %}
+                {{i}}
+                {% endfor %}
+                <form action="/scanner/upload" method="POST" enctype="multipart/form-data">
+                  {% csrf_token %}
+                  <div class="form-group">
+                    <label for="">Scan the product's barcode or QR code</label>
+                    <input type="file" accept = "image/*" class="form-control-file" name="name" id="" />
+                  </div>
+                  <button type="submit" class="btn btn-primary">Submit</button>
+                  <img src="/media/barcode.png" alt="">
+                </form>
             </div>
-            <<button type="submit" class="btn btn-primary">Submit</button>
-            <img src="/media/barcode.png" alt="">
-          </form>
-          
+          </div>
+        </div>
+
+        <div class = "map">
+          <h4>Your current store location</h4>
+          <div id="map"></div>
+          <script>
+            function initMap(){
+              var options = {
+                zoom:12,
+                center:{lat:47.5957,lng:-122.1929}
+              }
+              var map = new google.maps.Map(document.getElementById('map'), options);
+              google.maps.event.addListener(map, 'click', function(event){
+                addMarker({coords:event.latLng});
+              });
+              /*
+              // Add marker
+              var marker = new google.maps.Marker({
+                position:{lat:42.4668,lng:-70.9495},
+                map:map,
+                icon:'https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png'
+              });
+        
+              var infoWindow = new google.maps.InfoWindow({
+                content:'<h1>Lynn MA</h1>'
+              });
+        
+              marker.addListener('click', function(){
+                infoWindow.open(map, marker);
+              });
+              */
+        
+              // Array of markers
+              var markers = [
+                {
+                  coords:{lat:47.6156,lng:-122.2038},
+                  iconImage:'https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png',
+                  content:'<h1>Bellevue Square, WA</h1>'
+                }
+              ];
+        
+              for(var i = 0;i < markers.length;i++){
+                addMarker(markers[i]);
+              }
+  
+              function addMarker(props){
+                var marker = new google.maps.Marker({
+                  position:props.coords,
+                  map:map,
+                });
+        
+                // Check for customicon
+                if(props.iconImage){
+                  // Set icon image
+                  marker.setIcon(props.iconImage);
+                }
+        
+                // Check content
+                if(props.content){
+                  var infoWindow = new google.maps.InfoWindow({
+                    content:props.content
+                  });
+        
+                  marker.addListener('click', function(){
+                    infoWindow.open(map, marker);
+                  });
+                }
+              }
+            }
+          </script>
+          <script async defer
+            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAy9gbNEpw6DAJRQSL5DTttPW3_DLEkFh8&callback=initMap">
+          </script>
         </div>
       </div>
-    </div>
+  
+  
+
+    
   </body>
 </html>
+
+<!-- <div class="container">
+    <div class="row">
+      <div class="col">
+        {% for i in messages %}
+          {{i}}
+        {% endfor %}
+        <form action="/scanner/upload" method="POST" enctype="multipart/form-data">
+          {% csrf_token %}
+          <div class="form-group">
+            <label for="">Upload File</label>
+            <input type="file" accept = "image/*" class="form-control-file" name="name" id="" />
+          </div>
+          <button type="submit" class="btn btn-primary">Submit</button>
+          <img src="/media/barcode.png" alt="">
+        </form>
+        
+      </div>
+    </div>
+  </div> -->

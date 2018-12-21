@@ -8,7 +8,11 @@ from .models import Product
 
 
 def root(request):
-    return render(request, 'barcode_scanner/index.html')
+    context = {
+        'user_name': request.session['first_name'], 
+        'items': Product.objects.all().values()
+    }
+    return render(request, 'barcode_scanner/index.html', context)
 
 def upload_code(request):
     if request.method == 'POST':
@@ -31,9 +35,6 @@ def read_barcode(request):
     except: 
         messages.error(request, "invalid image type")
         return redirect('/scanner')
-    # print(img)
-    # decodedObjects = request.GET['data']
-    # print(decodedObjects)
     for obj in decodedObjects:
         try:
             id = Product.objects.get(sku = obj.data.decode()).id
@@ -41,14 +42,7 @@ def read_barcode(request):
         except:
             messages.error(request, "SKU not Found")
     return redirect('/scanner')
-        # print('Type : ', obj.type)
-        # print('Data : ', obj.data,'\n')
-        # print(obj.data.decode())
-        # print(Product.objects.first().sku)
-        # print(obj.data.decode() == Product.objects.first().sku)
-        # print(Product.objects.get(sku = obj.data.decode()).id)
-    # fs = FileSystemStorage(location = '/media')
-    # fs.delete('barcode'
+
 
 def display_page(request, id):
     context = {
@@ -58,5 +52,3 @@ def display_page(request, id):
 
 def scanner(request):
     return render(request, 'barcode_scanner/scanner.html')
-
-   

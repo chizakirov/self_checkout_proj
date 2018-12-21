@@ -20,6 +20,8 @@ from . import settings
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
+    url(r'^', include('apps.login.urls')),
     url(r'^scanner', include('apps.barcode_scanner.urls')),
+    url(r'^cart', include('apps.cart.urls')),
     url(r'^media/(?P<path>.*)$', serve,{'document_root': settings.MEDIA_ROOT}),
 ]

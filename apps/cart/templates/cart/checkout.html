@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link
+    rel="stylesheet"
+    href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+    integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+    crossorigin="anonymous"
+    />
+    <title>Checkout</title>
+    {% load static %}
+    <style>
+        @font-face {
+            font-family: 'airbnb-cereal'; 
+            src: url('./static/barcode_scanner/fonts/AirbnbCereal-Medium.ttf');
+        }
+        body{
+            min-height: 1000px;
+            margin-top: 50px;
+            background:linear-gradient(to right, #2c3442, transparent),url('./static/barcode_scanner/img/justwalkout.jpg') no-repeat center;
+            background-size: cover;
+            color: #ff6a70;
+            font-family: 'airbnb-cereal'; 
+        }
+        .container{
+            height: 900px;
+        }
+        .nav{
+            margin-bottom: 40px;
+        }
+        input{
+            border-radius: 5px;
+            box-shadow: 2px 2px #404c63;
+        }
+        input[type=submit]{
+            text-align: center;
+            color: white;
+            background-color: #0e1b30;
+            border: 1px solid #0e1b30;
+            box-shadow: 2px 2px #404c63;
+            margin-left: 60px;
+            padding-left: 10px;
+            padding-right: 10px;
+        }
+        .nav{
+            margin-bottom: 20px;
+        }
+        .nav-left, .nav-right{
+            display: inline-block;
+            vertical-align: top;
+        }
+        .nav-right{
+            margin-left: 800px; 
+        }
+        hr{
+            border: 0;
+            height: 1px;
+            background: white;
+        }
+        .content{
+            margin-top: 40px;
+            margin-bottom: 40px;
+            margin-left: 350px;
+        }
+        .form{
+            margin-top: 40px;
+            margin-left: 60px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="nav">
+            <h3 class = "nav-left">Hello, {{ name }}!</h3>
+            <p class = "nav-right"><a href="/clear">Sign Out</a></p>
+        </div>
+        <hr>
+        <div class="content">
+            <form action="" method = "post">
+                {% csrf_token %}
+                <h4>Fill in your billing information</h4>
+                <div class="form">
+                    <p>Street Address<br>
+                        <input type="text" name="street"></p>
+                    <p>Apartment/Unit(optional)<br>
+                        <input type="text" name="unit"></p>
+                    <p>City<br>
+                        <input type="text" name="city"></p>
+                    <p>State<br>
+                        <input type="text" name="state"></p>
+                    <p>Zipcode<br>
+                        <input type="zipcode" name="zipcode"></p>
+                    <p><input type="submit" value="Submit"></p>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link
+    rel="stylesheet"
+    href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+    integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+    crossorigin="anonymous"
+    />
+    {% load static %}
+    <style>
+        @font-face {
+            font-family: 'airbnb-cereal'; 
+            src: url('./static/cart/fonts/AirbnbCereal-Medium.ttf');
+        }
+        body{
+            min-height: 1000px;
+            margin-top: 50px;
+            background:linear-gradient(to bottom, #2c3442, transparent),url('./static/cart/img/justwalkout.jpg') no-repeat center;
+            background-size: cover;
+            color: #ff6a70;
+            font-family: 'airbnb-cereal'; 
+        }
+        .container{
+            height: 900px;
+        }
+        .nav{
+            margin-bottom: 20px;
+        }
+        .nav-left, .nav-right{
+            display: inline-block;
+            vertical-align: top;
+        }
+        .nav-right{
+            margin-left: 800px; 
+        }
+        hr{
+            border: 0;
+            height: 1px;
+            background: white;
+        }
+        /* .content{
+            margin-top: 40px;
+            margin-bottom: 40px;
+            margin-left: 350px;
+        } */
+
+        input[type=submit]{
+            text-align: center;
+            color: white;
+            background-color: #0e1b30;
+            border: 1px solid #0e1b30;
+            box-shadow: 2px 2px #404c63;
+            margin-left: 60px;
+            padding-left: 10px;
+            padding-right: 10px;
+            border-radius: 5px;
+            box-shadow: 2px 2px #404c63;
+            margin-top: 30px;
+        }
+        .edit_cart{
+            margin-top: 40px;
+            margin-left: -70px;
+        }
+        .edit_cart a{
+            text-align: center;
+            color: white;
+            background-color: #0e1b30;
+            border: 1px solid #0e1b30;
+            box-shadow: 2px 2px #404c63;
+            margin-left: 70px;
+            padding-left: 10px;
+            padding-right: 10px;
+            border-radius: 5px;
+            box-shadow: 2px 2px #404c63;
+        }
+
+        </style>
+    <title>Order Review</title>
+</head>
+<body>
+    <div class="container">
+        <div class="nav">
+            <h3 class = "nav-left">Hello, {{ user_name }}!</h3>
+            <p class = "nav-right"><a href="/clear" class="btn btn-primary" style = "font-size: 100%">Sign Out</a></p>
+        </div>
+            <hr>
+        <div class="content">
+            <h5>Here is your order summary.</h5>
+            <table class="table table-dark">
+                <thead>
+                    <tr>
+                    <td scope = "col">Product Name</td>
+                    <td scope = "col">Quantity</td>
+                    <td scope = "col">Price</td>
+                    <td scope = "col">Subtotal</td>
+                    <td scope = "col">Action</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if items %}
+                    {% for item in items %}
+                    <tr>
+                        {% csrf_token %}
+                        <td class="col">some name</td>
+                        <td class="col">{{ item.order_quantity }}
+                        </td>
+                        <td class="col">some price</td>
+                        <td class="col">{{ item.subtotal }}</td>
+                        <input type="hidden" name="product_id" value="{{ item.id }}">
+                        <td class="col">
+                            <p><a href="/scanner/display/{{item.id}}">Edit Quantity</a></p>
+                            <p><form action="/cart/delete/{{item.id}}" method="post">
+                                {% csrf_token %}
+                                <input type="hidden" name="delete_id" value="{{ item.id }}">
+                                <input type="submit" value="Delete">
+                            </form></p>
+                        </td>
+                    </form>
+                    </tr>
+                    {% endfor %}
+                    {% endif %}
+                </tbody>
+                </table>
+
+        <div class="checkout">
+            <form action="/checkout" method = "post">
+                {% csrf_token %}
+                <input type="hidden" name="cart_id" value="">
+                <button type="submit" class="btn btn-primary"style = "font-size: 130%">Check Out</button>
+            </form>
+            
+        <div class="edit_cart">
+            <a href="/scanner" class="btn btn-primary" style = "font-size: 130%">Edit Cart</button>
+        </div>
+    </div>
+</body>
+</html>
